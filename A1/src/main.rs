@@ -1,41 +1,21 @@
 use std::fs;
 
 fn main() {
-
-    let mut numbers: Vec<i32> = vec![];
+    let mut final_score = 0;
     fs::read_to_string("input")
     .unwrap()
     .lines()
     .for_each(|line| {
-        let mut number = String::new();
-        let mut is_adding = false;
-
+        let mut number:Vec<String> = Vec::new();
         for digit in line.chars() {
-            if is_adding {
-                break;
-            }
-            else if digit.is_numeric() {
-                is_adding = true;
-                number.push(digit);
-            }
-            
-           
-        }
-
-        is_adding = false;
-
-        for digit in line.chars().rev() {
-            if is_adding {
-                break;
-            }
-            else if digit.is_numeric() {
-                is_adding = true;
-                number.push(digit);
+            if digit.is_digit(10) {
+                number.push(String::from(digit));
             }
         }
-        numbers.push(number.parse::<i32>().unwrap())
+        final_score +=  (number[0].clone() + number[number.len() - 1].as_str()).parse::<i32>().unwrap();
+        number.clear();
     });
 
-    let sum: i32 = numbers.iter().sum();
-    println!("{}", sum)
+    println!("{}", final_score)
+    
 }
