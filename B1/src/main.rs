@@ -12,44 +12,34 @@ fn main() {
     .unwrap()
     .lines()
     .for_each(|line| {
-        
         game_id += 1;
-        let mut line = String::from(line);
         let mut is_possible = true;
-        line.push(';');
-
+        let mut line = line.replace(" ", "").trim().to_string();
+        // remove the game ID
         line.drain(..line.find(":").unwrap() + 1);
-        let line = line.replace(" ", "");
-        let matches: Vec<String> = line.split(";").map(String::from).collect();
 
-        for _match in matches.iter() {
-            if !_match.is_empty() {
-                let colors = _match.split(",").map(String::from).collect::<Vec<String>>();
-                
-                for color in colors {
-                    let mut color_name = String::new();
-                    let mut amount = String::new();
-                    for char in color.chars() {
-                        if char.is_digit(10) {
-                            amount.push(char);
-                        }
-                        else {
-                            color_name.push(char);
-                        }
+        for matches in line.split(";") {
+            for color in matches.split(",") {
+                let mut color_name = String::new();
+                let mut amount = String::new();
+                for char in color.chars() {
+                    if char.is_digit(10) {
+                        amount.push(char);
                     }
-                    let amount = amount.parse::<i32>().unwrap();
-                    let max_value = color_map.get(&color_name).unwrap();
-                    if amount > *max_value {
-                        is_possible = false;
-                        break;
+                    else {
+                        color_name.push(char);
                     }
                 }
-                
+                let amount = amount.parse::<i32>().unwrap();
+                let max_value = color_map.get(&color_name).unwrap();
+                if amount > *max_value {
+                    is_possible = false;
+                    break;
+                }
             }
-                
         }
+
         if is_possible {
-            
             total_score += game_id;
             println!("Adding for {} so now {}", game_id, total_score);
         }
